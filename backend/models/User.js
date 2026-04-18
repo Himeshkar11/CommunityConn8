@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
     },
     password: {
       type: String,
@@ -19,6 +20,26 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["admin", "volunteer", "donor"],
       default: "donor",
+    },
+
+    // 🔽 Volunteer fields
+    skills: {
+      type: [String],
+      default: [],
+    },
+    location: {
+      lat: {
+        type: Number,
+        default: null,
+      },
+      lng: {
+        type: Number,
+        default: null,
+      },
+    },
+    availability: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

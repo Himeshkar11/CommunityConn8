@@ -2,30 +2,35 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./config/db");
-const issueRoutes = require("./routes/issueRoutes");
 
+// 🔹 Routes
 const authRoutes = require("./routes/authRoutes");
+const issueRoutes = require("./routes/issueRoutes");
+const userRoutes = require("./routes/userRoutes");
+
+// 🔹 Middleware imports
 const { protect, authorizeRoles } = require("./middleware/authMiddleware");
 
 dotenv.config();
 connectDB();
 
-const app = express();
+const app = express(); // ✅ MUST come before app.use
 
 // 🔹 Middleware
 app.use(cors());
 app.use(express.json());
 
-// 🔹 Routes
+// 🔹 Routes (AFTER app is created)
 app.use("/api/auth", authRoutes);
 app.use("/api/issues", issueRoutes);
+app.use("/api/users", userRoutes); // ✅ FIXED POSITION
 
 // 🔹 Test route
 app.get("/", (req, res) => {
   res.send("API is running 🚀");
 });
 
-// 🔹 Protected route (any logged-in user)
+// 🔹 Protected route
 app.get("/api/protected", protect, (req, res) => {
   res.json({
     message: "Protected route accessed",
