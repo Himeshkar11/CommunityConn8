@@ -47,17 +47,30 @@ exports.getIssueById = async (req, res) => {
 // 🟢 UPDATE ISSUE
 exports.updateIssue = async (req, res) => {
   try {
-    const issue = await Issue.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const issue = await Issue.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
 
     if (!issue) {
       return res.status(404).json({ message: "Issue not found" });
     }
 
     res.json(issue);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// 🟢 DELETE ISSUE
+exports.deleteIssue = async (req, res) => {
+  try {
+    const issue = await Issue.findByIdAndDelete(req.params.id);
+
+    if (!issue) {
+      return res.status(404).json({ message: "Issue not found" });
+    }
+
+    res.json({ message: "Issue deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
