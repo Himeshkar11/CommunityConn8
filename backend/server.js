@@ -4,7 +4,8 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
-const { protect, authorizeRoles } = require("./middleware/authMiddleware");
+const adminRoutes = require("./routes/adminRoutes");
+const { protect } = require("./middleware/authMiddleware");
 
 dotenv.config();
 connectDB();
@@ -17,6 +18,7 @@ app.use(express.json());
 
 // 🔹 Routes
 app.use("/api/auth", authRoutes);
+app.use("/api", adminRoutes);
 
 // 🔹 Test route
 app.get("/", (req, res) => {
@@ -30,19 +32,6 @@ app.get("/api/protected", protect, (req, res) => {
     user: req.user,
   });
 });
-
-// 🔹 Admin-only route
-app.post(
-  "/api/admin-only",
-  protect,
-  authorizeRoles("admin"),
-  (req, res) => {
-    res.json({
-      message: "Welcome Admin 🔥",
-      user: req.user,
-    });
-  }
-);
 
 // 🔹 Server start
 const PORT = process.env.PORT || 5000;

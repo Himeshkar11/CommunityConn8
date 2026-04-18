@@ -2,25 +2,51 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const protect = async (req, res, next) => {
-  let token;
+  const authHeader = req.headers.authorization;
 
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    try {
-      token = req.headers.authorization.split(" ")[1];
+  if (!authHeader) {
+    return res.status(401).json({
+      message: "Authorization header missing. Send token as: Bearer <token>",
+    });
+  }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  if (!authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      message: "Invalid authorization format. Expected: Bearer <token>",
+    });
+  }
 
-      req.user = await User.findById(decoded.id).select("-password");
+  const token = authHeader.split(" ")[1];
 
-      next();
-    } catch (error) {
-      return res.status(401).json({ message: "Not authorized" });
+  if (!token) {
+    return res.status(401).json({
+      message: "Token missing after Bearer prefix",
+    });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found. Please log in again",
+      });
     }
-  } else {
-    return res.status(401).json({ message: "No token" });
+
+    req.user = user;
+    next();
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({
+        message: "Token expired. Please log in again",
+      });
+    }
+
+    return res.status(401).json({
+      message: "Invalid token. Please log in again",
+    });
   }
 };
 
