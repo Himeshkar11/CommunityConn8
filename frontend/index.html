@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CommunityConn Dashboard</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <h1>CommunityConn</h1>
+        <p class="muted">Volunteer Response Platform</p>
+        <nav>
+          <button class="nav-btn active" data-target="auth-panel">Auth</button>
+          <button class="nav-btn" data-target="issues-panel">Issues</button>
+          <button class="nav-btn" data-target="profile-panel">Volunteer Profile</button>
+        </nav>
+        <div class="api-config">
+          <label for="apiBase">API Base URL</label>
+          <input id="apiBase" type="text" placeholder="http://localhost:5000/api" />
+          <button id="saveApiBase">Save</button>
+        </div>
+      </aside>
+
+      <main class="content">
+        <header>
+          <h2>Disaster Issue Assignment Dashboard</h2>
+          <div class="session">
+            <span id="sessionUser">Not logged in</span>
+            <button id="logoutBtn" class="ghost">Logout</button>
+          </div>
+        </header>
+
+        <section id="messages"></section>
+
+        <section class="panel" id="auth-panel">
+          <div class="grid-2">
+            <form id="signupForm" class="card">
+              <h3>Create Account</h3>
+              <input name="name" type="text" placeholder="Full name" required />
+              <input name="email" type="email" placeholder="Email" required />
+              <input name="password" type="password" placeholder="Password" required />
+              <select name="role" required>
+                <option value="volunteer">Volunteer</option>
+                <option value="admin">Admin</option>
+                <option value="donor">Donor</option>
+              </select>
+              <button type="submit">Sign up</button>
+            </form>
+
+            <form id="loginForm" class="card">
+              <h3>Login</h3>
+              <input name="email" type="email" placeholder="Email" required />
+              <input name="password" type="password" placeholder="Password" required />
+              <button type="submit">Login</button>
+            </form>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="issues-panel">
+          <div class="card">
+            <div class="card-head">
+              <h3>Open Issues</h3>
+              <button id="refreshIssues" class="ghost">Refresh</button>
+            </div>
+            <div id="issuesList" class="issue-list"></div>
+          </div>
+
+          <form id="createIssueForm" class="card">
+            <h3>Create Issue (Admin)</h3>
+            <input name="title" type="text" placeholder="Issue title" required />
+            <textarea name="description" rows="3" placeholder="Description" required></textarea>
+            <div class="grid-3">
+              <select name="type" required>
+                <option value="food">Food</option>
+                <option value="medical">Medical</option>
+                <option value="education">Education</option>
+              </select>
+              <select name="urgency" required>
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+              <input name="lat" type="number" step="any" placeholder="Latitude" required />
+            </div>
+            <input name="lng" type="number" step="any" placeholder="Longitude" required />
+            <button type="submit">Create Issue</button>
+          </form>
+        </section>
+
+        <section class="panel hidden" id="profile-panel">
+          <div class="grid-2">
+            <div class="card" id="profileView">
+              <h3>Current Profile</h3>
+              <pre id="profileData">Login to load profile.</pre>
+            </div>
+
+            <form id="profileForm" class="card">
+              <h3>Update Volunteer Profile</h3>
+              <input name="skills" type="text" placeholder="skills,comma,separated" />
+              <div class="grid-2">
+                <input name="lat" type="number" step="any" placeholder="Latitude" />
+                <input name="lng" type="number" step="any" placeholder="Longitude" />
+              </div>
+              <label class="checkbox-row">
+                <input type="checkbox" name="availability" />
+                Available now
+              </label>
+              <button type="submit">Save Profile</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
